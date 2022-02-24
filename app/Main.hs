@@ -10,7 +10,7 @@ import qualified Data.ByteString.Lazy.Char8 as L
 
 main :: IO ()
 main = do
-  wordList <- readCSVWordList "./wordlist.csv"
+  wordList <- readWordList "./wordlist.txt"
   idx <- getStdRandom (randomR (0, length wordList - 1))
   let answer = wordList !! idx -- Our word to guess
   let tries = 6                -- The number of tries/guesses
@@ -79,8 +79,8 @@ printResults word guesses = do
   putStrLn $ "Target: " ++ word ++ "\n"
   printGuesses guesses
 
-readCSVWordList :: FilePath -> IO [String]
-readCSVWordList path = do
+readWordList :: FilePath -> IO [String]
+readWordList path = do
   contents <- L.readFile path
-  return (parseCSV contents)
-    where parseCSV = map (L.unpack . L.filter (/= ',')) . L.words
+  return (parse contents)
+    where parse = map (L.unpack) . L.lines

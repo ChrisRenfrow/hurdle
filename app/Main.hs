@@ -19,17 +19,17 @@ main = do
   putStrLn "Thanks for playing!"
 
 guessSession :: Int -> String -> StateT [Guess] IO ()
-guessSession maxGuesses answer =
-  do guessStr <- lift getLine
-     let guessMatch = getMatches answer guessStr
-     modify (++ [guessMatch])
-     guesses <- get
-     if all (\(_,x) -> x == InPlace) guessMatch
-       then lift $ printResults answer guesses
-       else if length guesses < maxGuesses
-            then do lift $ printGuesses guesses
-                    guessSession maxGuesses answer
-            else lift $ printResults answer guesses
+guessSession tries answer =
+  do g <- lift getLine
+     let match = getMatches answer g
+     modify (++ [match])
+     gs <- get
+     if all (\(_,x) -> x == InPlace) match
+       then lift $ printResults answer gs
+       else if length gs < tries
+            then do lift $ printGuesses gs
+                    guessSession tries answer
+            else lift $ printResults answer gs
 
 printGuess :: Guess -> IO ()
 printGuess guess = do

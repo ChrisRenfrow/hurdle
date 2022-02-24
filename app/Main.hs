@@ -1,13 +1,12 @@
 module Main where
 
 import Wordle
-
 import Data.Char (toUpper)
-import qualified Data.ByteString.Lazy.Char8 as L
 import Control.Monad (forM_, mapM_)
-import Control.Monad.State
-import System.Random
+import Control.Monad.State (StateT, execStateT, lift, modify, get)
+import System.Random (getStdRandom, randomR)
 import System.Console.ANSI
+import qualified Data.ByteString.Lazy.Char8 as L
 
 main :: IO ()
 main = do
@@ -19,11 +18,18 @@ main = do
   _ <- execStateT (guessSession tries answer) []
   putStrLn "Thanks for playing!"
 
-readCSVWordList :: FilePath -> IO [String]
-readCSVWordList path = do
-  contents <- L.readFile path
-  return (parseCSV contents)
-    where parseCSV = map (L.unpack . L.filter (/= ',')) . L.words
+guessSession :: Int -> String -> StateT [Guess] IO ()
+guessSession maxGuesses answer =
+  do guessStr <- lift getLine
+     let guessMatch = getMatches answer guessStr
+     modify (++ [guessMatch])
+     guesses <- get
+     if all (\(_,x) -> x == InPlace) guessMatch
+       then lift $ printResults answer guesses
+       else if length guesses < maxGuesses
+            then do lift $ printGuesses guesses
+                    guessSession maxGuesses answer
+            else lift $ printResults answer guesses
 
 printGuess :: Guess -> IO ()
 printGuess guess = do
@@ -73,16 +79,8 @@ printResults word guesses = do
   putStrLn $ "Target: " ++ word ++ "\n"
   printGuesses guesses
 
-
-guessSession :: Int -> String -> StateT [Guess] IO ()
-guessSession maxGuesses answer =
-  do guessStr <- lift getLine
-     let guessMatch = getMatches answer guessStr
-     modify (++ [guessMatch])
-     guesses <- get
-     if all (\(_,x) -> x == InPlace) guessMatch
-       then lift $ printResults answer guesses
-       else if length guesses < maxGuesses
-            then do lift $ printGuesses guesses
-                    guessSession maxGuesses answer
-            else lift $ printResults answer guesses
+readCSVWordList :: FilePath -> IO [String]
+readCSVWordList path = do
+  contents <- L.readFile path
+  return (parseCSV contents)
+    where parseCSV = map (L.unpack . L.filter (/= ',')) . L.words

@@ -3,28 +3,27 @@ module Main where
 import Wordle
 
 import Data.Char (toUpper)
+import qualified Data.ByteString.Lazy.Char8 as L
 import Control.Monad (forM_, mapM_)
 import Control.Monad.State
 import System.Random
 import System.Console.ANSI
 
-{- Wordle CLI
--- A CLI rendition of the popular word game, Wordle.
--}
+main :: IO ()
+main = do
+  wordList <- readCSVWordList "./wordlist.csv"
+  idx <- getStdRandom (randomR (0, length wordList - 1))
+  let answer = wordList !! idx -- Our word to guess
+  let tries = 6                -- The number of tries/guesses
+  putStrLn "Welcome to Wordle CLI!\nPlease enter your first guess:"
+  _ <- execStateT (guessSession tries answer) []
+  putStrLn "Thanks for playing!"
 
-wordList = [ "homes"
-           , "domes"
-           , "bones"
-           , "phone"
-           , "voids"
-           , "dames"
-           , "lambs"
-           , "funny"
-           , "dummy"
-           , "putty"
-           , "point"
-           , "blank"
-           , "cynic" ]
+readCSVWordList :: FilePath -> IO [String]
+readCSVWordList path = do
+  contents <- L.readFile path
+  return (parseCSV contents)
+    where parseCSV = map (L.unpack . L.filter (/= ',')) . L.words
 
 printGuess :: Guess -> IO ()
 printGuess guess = do
@@ -69,9 +68,9 @@ printFail f msg =
 printResults :: String -> [Guess] -> IO ()
 printResults word guesses = do
   if (guessToStr (last guesses)) == word
-    then printSuccess (putStrLn) "Great job!\n"
-    else printFail (putStrLn) "Better luck next time.\n"
-  putStrLn $ "Target: " ++ word
+    then printSuccess (putStrLn) "\nGreat job!\n"
+    else printFail (putStrLn) "\nBetter luck next time.\n"
+  putStrLn $ "Target: " ++ word ++ "\n"
   printGuesses guesses
 
 
@@ -87,12 +86,3 @@ guessSession maxGuesses answer =
             then do lift $ printGuesses guesses
                     guessSession maxGuesses answer
             else lift $ printResults answer guesses
-
-main :: IO ()
-main = do
-  idx <- getStdRandom (randomR (0, length wordList - 1))
-  let answer = wordList !! idx -- Our word to guess
-  let tries = 6                -- The number of tries/guesses
-  putStrLn "Welcome to Wordle CLI!\nPlease enter your first guess:"
-  guesses <- execStateT (guessSession tries answer) []
-  putStrLn "Thanks for playing!"

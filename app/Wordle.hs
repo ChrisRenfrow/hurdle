@@ -1,11 +1,8 @@
 module Wordle where
 
 import Data.Char (isAlpha)
-
 type Guess = [WordleLetter]
-
 type WordleLetter = (Char, Match)
-
 data Match = NotInWord -- Letter is not in word
            | InWord    -- Letter is in word
            | InPlace   -- Letter is in word and in position

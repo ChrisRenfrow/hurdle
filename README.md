@@ -5,6 +5,9 @@ A command-line rendition of the popular word game, written in Haskell.
 I'm writing this as a way to get familiar with Haskell and functional
 programming, and because I enjoy wordle and wanted an offline variant.
 
+## Usage
+`cabal run`
+
 ## Contributions
 
 I welcome constructive feedback and advice. But, as I'm working on
@@ -15,7 +18,7 @@ requested/proposed features outside of what I have laid-out in the
 ## TODO
 
 - [X] MVP (select a random word, see result of guesses, display success or failure)
-- [ ] Load wordlist as a CSV into memory
+- [x] Load wordlist as a CSV into memory
 - [ ] Guess validation
   - [ ] Proper length
   - [ ] Alphabetical characters only

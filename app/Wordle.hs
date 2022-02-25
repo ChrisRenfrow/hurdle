@@ -1,6 +1,10 @@
-module Wordle where
+module Wordle ( Guess
+              , WordleLetter
+              , Match(..)
+              , getMatches ) where
 
 import Data.Char (isAlpha)
+
 type Guess = [WordleLetter]
 type WordleLetter = (Char, Match)
 data Match = NotInWord -- Letter is not in word
@@ -22,5 +26,4 @@ getMatches word guess = map getMatch (indexed guess)
 
 wordValidator :: Int -> String -> Bool
 wordValidator validLength word =
-  length word == validLength && all (isAlpha) word
-
+  length word == validLength && all isAlpha word

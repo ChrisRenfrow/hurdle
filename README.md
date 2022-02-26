@@ -21,10 +21,10 @@ requested/proposed features outside of what I have laid-out in the
 
 - [X] MVP (select a random word, see result of guesses, display success or failure)
 - [x] Load wordlist from file into memory
-- [ ] Guess validation
-  - [ ] Proper length
-  - [ ] Alphabetical characters only
-  - [ ] Is valid word (is contained in validation wordlist)
+- [x] Guess validation
+  - [x] Proper length
+  - [x] Alphabetical characters only
+  - [x] Is valid word (is contained in validation wordlist)
 - [ ] Make game copy-able as unicode string for sharing results
 - [ ] Make game parameters configurable
   - [ ] Number of guesses

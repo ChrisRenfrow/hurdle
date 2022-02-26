@@ -15,9 +15,10 @@ import Control.Monad.State
 main :: IO ()
 main = do
   wordList <- readWordList "./wordlist.txt"
+  validWords <- readWordList "./validwords.txt"
   answer <- getRandomWord wordList -- Our word to guess
   let tries = 6                    -- The number of tries/guesses
-  let validator = wordValidator 5 wordList
+  let validator = wordValidator 5 validWords
   putStrLn "Welcome to Wordle CLI!"
   _ <- execStateT (guessSession tries answer validator) []
   putStrLn "Thanks for playing!"

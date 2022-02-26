@@ -23,23 +23,25 @@ main = do
   _ <- execStateT (guessSession tries answer validator) []
   putStrLn "Thanks for playing!"
 
+getGuess :: (String -> Bool) -> IO String
+getGuess valid =
+  do putStrLn "Please enter your guess:"
+     g <- getLine
+     if valid g
+       then return g
+       else do putStrLn "Bad input, try again."
+               getGuess valid
+
 guessSession :: Int -> String -> (String -> Bool)
              -> StateT [Guess] IO ()
 guessSession tries answer valid =
-  do g <- getGuess
+  do g <- lift $ getGuess valid
      let match = getMatches answer g
-     modify (++ [match])
-     gs <- get -- Get our guesses from state
+     modify (++ [match]) -- append our guess to state
+     gs <- get           -- Get our guesses from state
      if all ((== InPlace) . snd) match
        then lift $ printResults answer gs
        else if length gs < tries
             then do lift $ printGuesses gs
                     guessSession tries answer valid
             else lift $ printResults answer gs
-       where getGuess = do
-               lift $ putStrLn "Please enter your guess:"
-               g <- lift getLine
-               if valid g
-                 then return g
-                 else do lift $ putStrLn "Bad input, try again."
-                         getGuess

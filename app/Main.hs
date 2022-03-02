@@ -10,11 +10,11 @@ main :: IO ()
 main = do
   wordList <- readWordList "./wordlist.txt"
   validWords <- readWordList "./validwords.txt"
-  answer <- getRandomWord wordList -- Our word to guess
+  target <- getRandomWord wordList -- Our word to guess
   let tries = 6 -- The number of tries/guesses
-  let validator = wordValidator 5 validWords
+  let validator = guessValidator 5 validWords
   putStrLn "Welcome to Wordle CLI!"
-  _ <- execStateT (guessSession tries answer validator) []
+  _ <- execStateT (guessSession tries target validator) []
   putStrLn "Thanks for playing!"
 
 getGuess :: (String -> Bool) -> IO String
@@ -28,15 +28,15 @@ getGuess valid = do
       getGuess valid
 
 guessSession :: Int -> String -> (String -> Bool) -> StateT [Guess] IO ()
-guessSession tries answer valid = do
+guessSession tries target valid = do
   g <- lift $ getGuess valid
-  let match = getMatches answer g
+  let match = getMatches target g
   modify (++ [match]) -- append our guess to state
   gs <- get -- Get our guesses from state
   if all ((== InPlace) . snd) match
-    then lift $ printResults answer gs
+    then lift $ printResults target gs
     else if length gs < tries
            then do
              lift $ printGuesses gs
-             guessSession tries answer valid
-           else lift $ printResults answer gs
+             guessSession tries target valid
+           else lift $ printResults target gs

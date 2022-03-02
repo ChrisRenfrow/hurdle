@@ -3,7 +3,7 @@ module Wordle
   , WordleLetter
   , Match(..)
   , getMatches
-  , wordValidator
+  , guessValidator
   ) where
 
 import           Data.Char (isAlpha)
@@ -20,15 +20,15 @@ data Match
   deriving (Show, Eq)
 
 getMatches :: String -> String -> Guess
-getMatches word guess = map getMatch (indexed guess)
+getMatches target guess = map getMatch (indexed guess)
   where
     getMatch (idx, letter) =
-      if letter `elem` word
-        then (if letter == word !! idx
+      if letter `elem` target
+        then (if letter == target !! idx
                 then (letter, InPlace)
                 else (letter, InWord))
         else (letter, NotInWord)
 
-wordValidator :: Int -> [String] -> String -> Bool
-wordValidator validLength validWords word =
-  length word == validLength && all isAlpha word && word `elem` validWords
+guessValidator :: Int -> [String] -> String -> Bool
+guessValidator validLength validWords guess =
+  length guess == validLength && all isAlpha guess && guess `elem` validWords

@@ -48,9 +48,9 @@ printFail f msg = do
   setSGR [Reset]
 
 printResults :: String -> [Guess] -> IO ()
-printResults word guesses = do
-  if guessToStr (last guesses) == word
+printResults target guesses = do
+  if guessToStr (last guesses) == target
     then printSuccess putStrLn "\nGreat job!\n"
     else printFail putStrLn "\nBetter luck next time.\n"
-  putStrLn $ "Target: " ++ word ++ "\n"
+  putStrLn $ "Target: " ++ target ++ "\n"
   printGuesses guesses

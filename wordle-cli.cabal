@@ -28,6 +28,7 @@ executable wordle-cli
     other-modules:    Wordle
                     , WordList
                     , Render
+                    , Util
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:

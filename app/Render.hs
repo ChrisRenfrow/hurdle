@@ -3,9 +3,9 @@ module Render
   , printResults
   ) where
 
-import           Wordle
 import           Control.Monad       (forM_, mapM_)
 import           System.Console.ANSI
+import           Wordle
 
 printGuess :: Guess -> IO ()
 printGuess guess = do

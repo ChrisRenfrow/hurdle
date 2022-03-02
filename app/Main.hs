@@ -1,10 +1,10 @@
 module Main where
 
+import           Control.Monad.State (StateT, execStateT, get, lift, modify)
+import           Data.Char           (toUpper)
 import           Render
 import           WordList
 import           Wordle
-import           Control.Monad.State (StateT, execStateT, get, lift, modify)
-import           Data.Char           (toUpper)
 
 main :: IO ()
 main = do

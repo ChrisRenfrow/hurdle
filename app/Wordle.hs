@@ -7,6 +7,7 @@ module Wordle
   ) where
 
 import           Data.Char (isAlpha)
+import           Util      (indexed)
 
 type Guess = [WordleLetter]
 
@@ -17,9 +18,6 @@ data Match
   | InWord -- Letter is in word
   | InPlace -- Letter is in word and in position
   deriving (Show, Eq)
-
-indexed :: [a] -> [(Int, a)]
-indexed xs = zip [0 .. (length xs)] xs
 
 getMatches :: String -> String -> Guess
 getMatches word guess = map getMatch (indexed guess)

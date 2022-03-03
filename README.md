@@ -1,4 +1,4 @@
-# Wordle CLI
+# Hurdle (formerly Wordle CLI)
 
 A command-line rendition of the popular word game, written in Haskell.
 
